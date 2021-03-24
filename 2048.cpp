@@ -7,24 +7,24 @@ int gameBoard[4][4];
 int dirLine[] = {1, 0, -1, 0};
 int dirColumn[] = {0, 1, 0, -1};
 
-/*pair<int, int> generateUnoccupiedPosition()
+pair<int, int> generateUnoccupiedPosition()
 {
     int occupied = 1, line, column;
     while(occupied) {
-        int line = rand() % 4;
-        int column = rand() % 4;
+        line = rand() % 4;
+        column = rand() % 4;
         if(gameBoard[line][column]==0) occupied = 0;
     }
     return make_pair(line, column);
-}*/
+}
 
 void newGame()
 {
     for(int i=0; i<4; i++)
         for(int j=0; j<4; j++)
             gameBoard[i][j] = 0;
-    /*pair<int,int> pos = generateUnoccupiedPosition();
-    gameBoard[pos.first][pos.second] = 2;*/
+    pair<int,int> pos = generateUnoccupiedPosition();
+    gameBoard[pos.first][pos.second] = 2;
 }
 
 void printMenu()
