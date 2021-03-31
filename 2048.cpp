@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <ctime>
 #include <cstdlib>
 using namespace std;
@@ -18,21 +19,27 @@ pair<int, int> generateUnoccupiedPosition()
     return make_pair(line, column);
 }
 
+void addPiece()
+{
+    pair<int,int> pos = generateUnoccupiedPosition();
+    gameBoard[pos.first][pos.second] = 2;
+}
+
 void newGame()
 {
     for(int i=0; i<4; i++)
         for(int j=0; j<4; j++)
             gameBoard[i][j] = 0;
-    pair<int,int> pos = generateUnoccupiedPosition();
-    gameBoard[pos.first][pos.second] = 2;
+    addPiece();
 }
 
 void printMenu()
 {
+    system("cls");
     for(int i=0; i<4; i++){
         for(int j=0; j<4; j++)
-            if(gameBoard[i][j]==0) cout << ".";
-            else cout << gameBoard[i][j];
+            if(gameBoard[i][j]==0) cout << setw(4) << ".";
+            else cout << setw(4) << gameBoard[i][j];
         cout << endl;
     }
     cout << "n: new game, w: up, s: down, d: right, a: left, q:quit" << endl;
@@ -40,7 +47,7 @@ void printMenu()
 
 bool canMove(int line, int column, int nextLine, int nextColumn)
 {
-    if(nextLine<0 || nextColumn<0 || nextLine>=4 || nextColumn>=0
+    if(nextLine<0 || nextColumn<0 || nextLine>=4 || nextColumn>=4
         || gameBoard[line][column] != gameBoard[nextLine][nextColumn] && gameBoard[nextLine][nextColumn] != 0)
         return false;
     return true;
@@ -57,16 +64,22 @@ void applyMove(int dir)
         startColumn = 3;
         columnStep = -1;
     }
-    int movePossible = 0;
-    for(int i= startLine; i>=0 && i<4; i+= lineStep)
-        for(int j= startColumn; j>=0 && j<4; j+= columnStep){
-            int nextI = i + dirLine[dir], nextJ = j + dirColumn[dir];
-            if (canMove(i, j , nextI, nextJ)){
-                gameBoard[nextI][nextJ] += gameBoard[i][j];
-                gameBoard[i][j] =0;
-                movePossible = 1;
+    int movePossible, canAddPiece = 0;
+    do{
+        movePossible = 0;
+        for(int i= startLine; i>=0 && i<4; i+= lineStep)
+            for(int j= startColumn; j>=0 && j<4; j+= columnStep){
+                int nextI = i + dirLine[dir], nextJ = j + dirColumn[dir];
+                if (gameBoard[i][j] && canMove(i, j , nextI, nextJ)){
+                    gameBoard[nextI][nextJ] += gameBoard[i][j];
+                    gameBoard[i][j] =0;
+                    movePossible = canAddPiece = 1;
+                }
             }
-        }
+        printMenu();
+    } while(movePossible);
+    if(canAddPiece)
+        addPiece();
 }
 int main()
 {
